@@ -19,8 +19,8 @@ import sys
 import os
 import datetime
 
-__author__ = "Bruce Montgomery and Bhallaji Venkatesankulathusundaram"
-__copyright__ = "Copyright (C) 2017 by Bruce Montgomery and Bhallaji Venkatesankulathusundaram"
+__author__ = "Gaurav Gandhi"
+__copyright__ = "Copyright (C) 2017 by Gaurav Gandhi"
 #
 # Redistribution, modification or use of this software in source or binary
 # forms is permitted as long as the files maintain this copyright. Users are
