@@ -13,6 +13,7 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+import datetime as d
 class Ui_Dialog(QtWidgets.QWidget): 
 	gl_h,gl_t,curr_position,sample = [0,0,25,0]
 	avg_t, avg_h = [0,0]
@@ -99,6 +100,41 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.label_9 = QtWidgets.QLabel(Dialog)
 		self.label_9.setGeometry(QtCore.QRect(540, 130, 21, 19))
 		self.label_9.setObjectName("label_9")
+		self.label_10 = QtWidgets.QLabel(Dialog)
+		self.label_10.setGeometry(QtCore.QRect(285, 10, 68, 19))
+		self.label_10.setObjectName("label_10")		
+		self.label_11 = QtWidgets.QLabel(Dialog)
+		self.label_11.setGeometry(QtCore.QRect(80, 10, 131, 21))
+		self.label_11.setObjectName("label_11")		
+		self.label_12 = QtWidgets.QLabel(Dialog)
+		self.label_12.setGeometry(QtCore.QRect(380, 10, 68, 19))
+		self.label_12.setObjectName("label_12")	
+
+		self.label_13 = QtWidgets.QLabel(Dialog)
+		self.label_13.setGeometry(QtCore.QRect(490, 10, 68, 19))
+		self.label_13.setObjectName("label_13")	
+
+		self.label_14= QtWidgets.QLabel(Dialog)
+		self.label_14.setGeometry(QtCore.QRect(570, 10, 68, 19))
+		self.label_14.setObjectName("label_14")	
+
+	
+		self.Hour_disp = QtWidgets.QLCDNumber(Dialog)
+		self.Hour_disp.setGeometry(QtCore.QRect(230, 10, 64, 23))
+		self.Hour_disp.setFrameShape(QtWidgets.QFrame.NoFrame)
+		self.Hour_disp.setSmallDecimalPoint(False)
+		self.Hour_disp.setDigitCount(2)
+		self.Hour_disp.setSegmentStyle(QtWidgets.QLCDNumber.Filled)
+		self.Hour_disp.setProperty("value", 16.0)
+		self.Hour_disp.setObjectName("Hour_disp")
+
+		self.Min_lcd = QtWidgets.QLCDNumber(Dialog)
+		self.Min_lcd.setGeometry(QtCore.QRect(280, 10, 64, 23))
+		self.Min_lcd.setFrameShape(QtWidgets.QFrame.NoFrame)
+		self.Min_lcd.setDigitCount(2)
+		self.Min_lcd.setProperty("value", 2.0)
+		self.Min_lcd.setObjectName("Min_lcd")
+
 		self.sample_freq.start(10000)
         
 		self.retranslateUi(Dialog)
@@ -125,22 +161,36 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.label_7.setText(self._translate("Dialog", "C"))
 		self.label_8.setText(self._translate("Dialog", "%"))
 		self.label_9.setText(self._translate("Dialog", "C"))
+		self.label_10.setText(self._translate("Dialog", ":"))
+		self.label_11.setText(self._translate("Dialog", "Data Requested at"))
+		self.label_12.setText(self._translate("Dialog", "on"))
+		self.label_13.setText(self._translate("Dialog", "/"))
+		self.label_14.setText(self._translate("Dialog", "/"))
+		
+		now = d.datetime.now()
+		self.Hour_disp.display(now.hour)
+		self.Min_lcd.display(now.minute)
 
 
 	def timeout_isr(self):
-		print("Got Timed Reading")
 		self.sample = self.sample + 1
-		self.query_temp()
-		self.query_humidity()
-		self.avg_t = ((self.avg_t  * (self.sample-1))+ self.gl_t)/self.sample	
-		self.avg_h = ((self.avg_h  * (self.sample-1))+ self.gl_h)/self.sample
-		
-		self.lineEdit_temp_2.setText(self._translate("Dialog", '{0:.2f}'.format(self.avg_t)))
-		self.lineEdit_humid_2.setText(self._translate("Dialog", '{0:.2f}'.format(self.avg_h)))
+		humidity,temp = ad.read_retry(22,4)
+		if(temp == None):
+			self.avg_t = ((self.avg_t  * (self.sample-1))+ temp)/self.sample	
+			self.avg_h = ((self.avg_h  * (self.sample-1))+ humidity)/self.sample
+
+			self.lineEdit_temp_2.setText(self._translate("Dialog", '{0:.2f}'.format(self.avg_t)))
+			self.lineEdit_humid_2.setText(self._translate("Dialog", '{0:.2f}'.format(self.avg_h)))
+		else:
+			self.lineEdit_temp_2.setText(self._translate("Dialog","Sensor Disconnected"))
+			self.lineEdit_humid_2.setText(self._translate("Dialog", "Sensor Disconnected"))
 	
 	def query_temp(self):
 		
 		humidity, temp = ad.read_retry(22,4)
+		now = d.datetime.now()
+		self.Hour_disp.display(now.hour)
+		self.Min_lcd.display(now.minute)
 		if(temp == None):
 			self.lineEdit_temp.setText(self._translate("Dialog", "Sensor Disconnected"))
 		else:	
@@ -164,6 +214,9 @@ class Ui_Dialog(QtWidgets.QWidget):
 
 	def query_humidity(self):
 		humidity, temp = ad.read_retry(22,4)
+		now = d.datetime.now()
+		self.Hour_disp.display(now.hour)
+		self.Min_lcd.display(now.minute)
 		if(humidity == None):
 			self.lineEdit_humid.setText(self._translate("Dialog", "Sensor Disconnected"))
 		else:	
