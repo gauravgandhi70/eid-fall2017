@@ -34,21 +34,21 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.Plot_Data.setGeometry(QtCore.QRect(50, 440, 161, 41))
 		self.Plot_Data.setObjectName("Plot_Data")
 		self.lineEdit_temp = QtWidgets.QLineEdit(Dialog)
-		self.lineEdit_temp.setGeometry(QtCore.QRect(390, 130, 141, 31))
+		self.lineEdit_temp.setGeometry(QtCore.QRect(350, 130, 181, 31))
 		self.lineEdit_temp.setFrame(True)
 		self.lineEdit_temp.setReadOnly(True)
 		self.lineEdit_temp.setObjectName("lineEdit_temp")
 		self.lineEdit_humid = QtWidgets.QLineEdit(Dialog)
-		self.lineEdit_humid.setGeometry(QtCore.QRect(100, 130, 141, 31))
+		self.lineEdit_humid.setGeometry(QtCore.QRect(50, 130, 191, 31))
 		self.lineEdit_humid.setReadOnly(True)
 		self.lineEdit_humid.setObjectName("lineEdit_humid")
 		self.temp_progress = QtWidgets.QProgressBar(Dialog)
-		self.temp_progress.setGeometry(QtCore.QRect(380, 310, 201, 41))
+		self.temp_progress.setGeometry(QtCore.QRect(350, 310, 201, 41))
 		self.temp_progress.setMaximum(30)
 		self.temp_progress.setProperty("value", 0)
 		self.temp_progress.setObjectName("temp_progress")
 		self.humid_progress = QtWidgets.QProgressBar(Dialog)
-		self.humid_progress.setGeometry(QtCore.QRect(100, 310, 201, 41))
+		self.humid_progress.setGeometry(QtCore.QRect(50, 310, 201, 41))
 		self.humid_progress.setMaximum(100)
 		self.humid_progress.setProperty("value", 0)
 		self.humid_progress.setObjectName("humid_progress")
@@ -80,11 +80,11 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.label_5.setGeometry(QtCore.QRect(270, 190, 121, 19))
 		self.label_5.setObjectName("label_5")
 		self.lineEdit_humid_2 = QtWidgets.QLineEdit(Dialog)
-		self.lineEdit_humid_2.setGeometry(QtCore.QRect(100, 220, 141, 31))
+		self.lineEdit_humid_2.setGeometry(QtCore.QRect(50, 220, 191, 31))
 		self.lineEdit_humid_2.setReadOnly(True)
 		self.lineEdit_humid_2.setObjectName("lineEdit_humid_2")
 		self.lineEdit_temp_2 = QtWidgets.QLineEdit(Dialog)
-		self.lineEdit_temp_2.setGeometry(QtCore.QRect(390, 220, 141, 31))
+		self.lineEdit_temp_2.setGeometry(QtCore.QRect(350, 220, 181, 31))
 		self.lineEdit_temp_2.setFrame(True)
 		self.lineEdit_temp_2.setReadOnly(True)
 		self.lineEdit_temp_2.setObjectName("lineEdit_temp_2")
@@ -125,17 +125,29 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.Hour_disp.setSmallDecimalPoint(False)
 		self.Hour_disp.setDigitCount(2)
 		self.Hour_disp.setSegmentStyle(QtWidgets.QLCDNumber.Filled)
-		self.Hour_disp.setProperty("value", 16.0)
 		self.Hour_disp.setObjectName("Hour_disp")
 
 		self.Min_lcd = QtWidgets.QLCDNumber(Dialog)
 		self.Min_lcd.setGeometry(QtCore.QRect(280, 10, 64, 23))
 		self.Min_lcd.setFrameShape(QtWidgets.QFrame.NoFrame)
 		self.Min_lcd.setDigitCount(2)
-		self.Min_lcd.setProperty("value", 2.0)
 		self.Min_lcd.setObjectName("Min_lcd")
 
-		self.sample_freq.start(10000)
+		self.date = QtWidgets.QLCDNumber(Dialog)
+		self.date.setGeometry(QtCore.QRect(490,10,68,19))
+		self.date.setFrameShape(QtWidgets.QFrame.NoFrame)
+		self.date.setDigitCount(2)
+		self.date	.setObjectName("date")
+
+		self.month = QtWidgets.QLCDNumber(Dialog)
+		self.month.setGeometry(QtCore.QRect(420, 10, 64, 23))
+		self.month.setFrameShape(QtWidgets.QFrame.NoFrame)
+		self.month.setDigitCount(2)
+		self.month.setObjectName("month")
+
+
+
+		self.sample_freq.start(30000)
         
 		self.retranslateUi(Dialog)
 		self.Plot_Data.clicked.connect(self.plot_graph)
@@ -165,22 +177,26 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.label_11.setText(self._translate("Dialog", "Data Requested at"))
 		self.label_12.setText(self._translate("Dialog", "on"))
 		self.label_13.setText(self._translate("Dialog", "/"))
-		self.label_14.setText(self._translate("Dialog", "/"))
+		
 		
 		now = d.datetime.now()
-		self.Hour_disp.display(now.hour)
-		self.Min_lcd.display(now.minute)
+		self.date.display(now.day)
+		self.month.display(now.month)
 
 
 	def timeout_isr(self):
 		self.sample = self.sample + 1
 		humidity,temp = ad.read_retry(22,4)
-		if(temp == None):
+		if(temp != None):
 			self.avg_t = ((self.avg_t  * (self.sample-1))+ temp)/self.sample	
 			self.avg_h = ((self.avg_h  * (self.sample-1))+ humidity)/self.sample
 
 			self.lineEdit_temp_2.setText(self._translate("Dialog", '{0:.2f}'.format(self.avg_t)))
 			self.lineEdit_humid_2.setText(self._translate("Dialog", '{0:.2f}'.format(self.avg_h)))
+	
+			with open('Weather_Data.csv', 'a') as csvfile:
+				filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+				filewriter.writerow(['{0:.2f}'.format(self.avg_h),'{0:.2f}'.format(self.avg_t)])
 		else:
 			self.lineEdit_temp_2.setText(self._translate("Dialog","Sensor Disconnected"))
 			self.lineEdit_humid_2.setText(self._translate("Dialog", "Sensor Disconnected"))
