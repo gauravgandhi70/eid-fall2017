@@ -153,7 +153,7 @@ class Ui_Dialog(QtWidgets.QWidget):
 			self.temp_progress.setValue(temp)
 			if(temp > self.curr_position):
 				self.temp_progress.setMaximum(temp)
-				self.alarm.setText(self._translate("Dialog", "High Temperature Warning"))
+				self.alarm.setText(self._translate("Dialog", "Temp Alarm"))
 			else:
 				self.temp_progress.setMaximum(self.curr_position+1)
 				self.alarm.setText(self._translate("Dialog", "Safe"))	
@@ -199,9 +199,9 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.curr_position = self.AlarmControl.value()
 		if(self.curr_position < self.gl_t):
 			self.temp_progress.setMaximum(self.gl_t)
-			self.alarm.setText(self._translate("Dialog", "High Temperature Warning"))			
+			self.alarm.setText(self._translate("Dialog", "Temp Alarm"))			
 		else:
-			self.temp_progress.setMaximum(self.curr_position+1)
+			self.temp_progress.setMaximum(self.curr_position)
 			self.alarm.setText(self._translate("Dialog", "Safe"))	
 		
 		
