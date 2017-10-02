@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QPushButton" name="temperature">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>60</y>
+     <width>112</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Get Temp</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="humidity">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>130</y>
+     <width>112</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Get Humid</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_3">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>230</y>
+     <width>112</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_temp">
+   <property name="geometry">
+    <rect>
+     <x>192</x>
+     <y>64</y>
+     <width>141</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="frame">
+    <bool>true</bool>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_humid">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>130</y>
+     <width>141</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>289</x>
+     <y>241</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>360</x>
+     <y>-19</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>temperature</sender>
+   <signal>clicked()</signal>
+   <receiver>lineEdit_temp</receiver>
+   <slot>paste()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>193</x>
+     <y>79</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>humidity</sender>
+   <signal>clicked()</signal>
+   <receiver>lineEdit_humid</receiver>
+   <slot>paste()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>150</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>194</x>
+     <y>148</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
