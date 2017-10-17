@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Weather Monitoring</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style_client.css">
+    <script src="http://code.jquery.com/jquery.min.js"></script>
+    <script>
+
+      // log function
+      log = function(data){
+        $("div#terminal").prepend("</br>" +data);
+        console.log(data);
+      };
+
+      $(document).ready(function () {
+        var ws;
+        evt.preventDefault();
+
+        // create websocket instance
+        ws = new WebSocket("ws://" + host + ":" + port + uri);
+
+        // Handle incoming websocket message callback
+        ws.onmessage = function(evt) {
+          log("Message Received: " + evt.data)
+          alert("message received: " + evt.data);
+          };
+
+        // Close Websocket callback
+        ws.onclose = function(evt) {
+          log("***Connection Closed***");
+          alert("Connection close");
+          $("#host").css("background", "#ff0000");
+          $("#port").css("background", "#ff0000");
+          $("#uri").css("background",  "#ff0000");
+          $("div#message_details").empty();
+
+          };
+      
+        // Open Websocket callback
+        ws.onopen = function(evt) {
+          $("#host").css("background", "#00ff00");
+          $("#port").css("background", "#00ff00");
+          $("#uri").css("background", "#00ff00");
+          $("div#message_details").show();
+          log("***Connection Opened***");
+        };
+
+        $("#get_temp").click(function(evt) {
+          $("#temp_level").val(30 +"°C")
+        });
+
+        $("#get_humidity").click(function(evt) {
+          $("#hum_level").val(30 +"%")
+        });
+
+        // Send websocket message function
+        $("#send").click(function(evt) {
+            log("Sending Message: "+$("#message").val());
+            ws.send($("#message").val());
+        });
+
+      });
+    </script>
+  </head>
+
+  <body>
+    <h1>Weather Monitoring</h1>
+    <div id="connection_details">
+      <label for="temp_level">Temperature:</label>
+      <output type="text" id="temp_level"></output><br />
+      <label for="hum_level">Humidity:</label>
+      <output type="text" id="hum_level"></output><br />
+      <label for="avg_temp">Average Temp:</label>
+      <output type="text" id="avg_temp"></output> <br />
+      <label for="avg_hum">Average Humidity:</label>
+      <output type="text" id="avg_hum"></output> <br />
+      <label for="max_temp">Maximum Temperature:</label>
+      <output type="text" id="max_temp"></output> <br />
+      <label for="max_hum">Maximum Humidity:</label>
+      <output type="text" id="max_hum"></output> <br />
+
+      <input type="submit" id="get_temp" value="GetTemperature" />
+      <input type="submit" id="get_humidity" value="GetHumidity" />
+    </div>
+    <div id="message_details">
+        </br></br>
+        <label for="message">message:</label>
+        <input type="text" id="message" value="Hello World!"/><br />
+        <input type="submit" id="send" value="send" />
+    </div>
+    <div id="terminal">
+
+    </div>
+  </body>
+</html>
