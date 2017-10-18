@@ -3,7 +3,7 @@
   <head>
     <title>Weather Monitoring</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="style_client.css">
+    <link rel="stylesheet" type="text/css" href="C:\Users\skulkarn\Downloads\websockets-demo\Websockets\style_client.css">
     <script src="http://code.jquery.com/jquery.min.js"></script>
     <script>
 
@@ -33,24 +33,30 @@
   </head>
 
   <body>
-    <h1>Weather Monitoring</h1>
+    <h1 id="Heading">Weather Monitoring</h1>
     <div id="connection_details">
-      <label for="temp_level">Temperature:</label>
+      <label for="temp_level" id="temp_level_label">Temperature:</label>
       <output type="text" id="temp_level"></output><br />
-      <label for="hum_level">Humidity:</label>
+      <label for="hum_level" id="hum_level_label">Humidity:</label>
       <output type="text" id="hum_level"></output><br />
-      <label for="avg_temp">Average Temp:</label>
+      <label for="avg_temp" id="avg_temp_label">Average Temp:</label>
       <output type="text" id="avg_temp"></output> <br />
-      <label for="avg_hum">Average Humidity:</label>
+      <label for="avg_hum" id="avg_hum_label">Average Humidity:</label>
       <output type="text" id="avg_hum"></output> <br />
-      <label for="max_temp">Maximum Temperature:</label>
+      <label for="max_temp" id="max_temp_label">Maximum Temperature:</label>
       <output type="text" id="max_temp"></output> <br />
-      <label for="max_hum">Maximum Humidity:</label>
+      <label for="max_hum" id="max_hum_label">Maximum Humidity:</label>
       <output type="text" id="max_hum"></output> <br />
+      <label for="min_temp" id="min_temp_label">Minimum Temperature:</label>
+      <output type="text" id="min_temp"></output> <br />
+      <label for="min_hum" id="min_hum_label">Minimum Humidity:</label>
+      <output type="text" id="min_hum"></output> <br />
 
       <input type="submit" id="get_temp" value="GetTemperature" />
       <input type="submit" id="get_humidity" value="GetHumidity" />
+      <input type="submit" id="CtoF" value="C to F" />
     </div>
+
     <div id="terminal">
 
     </div>
