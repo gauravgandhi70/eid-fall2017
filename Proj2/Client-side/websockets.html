@@ -14,38 +14,6 @@
       };
 
       $(document).ready(function () {
-        var ws;
-        evt.preventDefault();
-
-        // create websocket instance
-        ws = new WebSocket("ws://" + host + ":" + port + uri);
-
-        // Handle incoming websocket message callback
-        ws.onmessage = function(evt) {
-          log("Message Received: " + evt.data)
-          alert("message received: " + evt.data);
-          };
-
-        // Close Websocket callback
-        ws.onclose = function(evt) {
-          log("***Connection Closed***");
-          alert("Connection close");
-          $("#host").css("background", "#ff0000");
-          $("#port").css("background", "#ff0000");
-          $("#uri").css("background",  "#ff0000");
-          $("div#message_details").empty();
-
-          };
-      
-        // Open Websocket callback
-        ws.onopen = function(evt) {
-          $("#host").css("background", "#00ff00");
-          $("#port").css("background", "#00ff00");
-          $("#uri").css("background", "#00ff00");
-          $("div#message_details").show();
-          log("***Connection Opened***");
-        };
-
         $("#get_temp").click(function(evt) {
           $("#temp_level").val(30 +"°C")
         });
@@ -82,12 +50,6 @@
 
       <input type="submit" id="get_temp" value="GetTemperature" />
       <input type="submit" id="get_humidity" value="GetHumidity" />
-    </div>
-    <div id="message_details">
-        </br></br>
-        <label for="message">message:</label>
-        <input type="text" id="message" value="Hello World!"/><br />
-        <input type="submit" id="send" value="send" />
     </div>
     <div id="terminal">
 
