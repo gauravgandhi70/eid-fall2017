@@ -5,31 +5,7 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="style_client.css">
     <script src="http://code.jquery.com/jquery.min.js"></script>
-    <script>
-
-      // log function
-      log = function(data){
-        $("div#terminal").prepend("</br>" +data);
-        console.log(data);
-      };
-
-      $(document).ready(function () {
-        $("#get_temp").click(function(evt) {
-          $("#temp_level").val(30 +"°C")
-        });
-
-        $("#get_humidity").click(function(evt) {
-          $("#hum_level").val(30 +"%")
-        });
-
-        // Send websocket message function
-        $("#send").click(function(evt) {
-            log("Sending Message: "+$("#message").val());
-            ws.send($("#message").val());
-        });
-
-      });
-    </script>
+    <script src="app.js"></script>
   </head>
 
   <body>
@@ -54,6 +30,12 @@
 
       <input type="submit" id="get_temp" value="GetTemperature" />
       <input type="submit" id="get_humidity" value="GetHumidity" />
+      <input type="submit" id="get_avg_temp" value="GetAvgTemp" />
+      <input type="submit" id="get_avg_hum" value="GetAvgHumidity" />
+      <input type="submit" id="get_max_temp" value="GetMaxTemp" />
+      <input type="submit" id="get_max_hum" value="GetMaxHumidity" />
+      <input type="submit" id="get_min_temp" value="GetMinTemp" />
+      <input type="submit" id="get_min_hum" value="GetMinHumidity" />
       <input type="submit" id="CtoF" value="C to F" />
     </div>
 

@@ -50,13 +50,13 @@
   color:#000000;
   float:left;
   position: absolute;
-  top: 200px;
+  top: 150px;
   left: 250px;
 }
 
 #avg_temp_label{
   position: absolute;
-  top: 210px;
+  top: 160px;
   left: 155px;
 }
 
@@ -71,13 +71,13 @@
   color:#000000;
   float:left;
   position: absolute;
-  top: 200px;
+  top: 150px;
   left: 450px;
 }
 
 #avg_hum_label{
   position: absolute;
-  top: 210px;
+  top:160px;
   left: 330px;
 }
 
@@ -92,13 +92,13 @@
   color:#000000;
   float:left;
   position: absolute;
-  top: 250px;
+  top: 200px;
   left: 250px;
 }
 
 #max_temp_label{
   position: absolute;
-  top: 260px;
+  top: 210px;
   left: 95px;
 }
 
@@ -113,13 +113,13 @@
   color:#000000;
   float:left;
   position: absolute;
-  top: 250px;
+  top: 200px;
   left: 450px;
 }
 
 #max_hum_label{
   position: absolute;
-  top: 260px;
+  top: 210px;
   left: 315px;
 }
 
@@ -134,13 +134,13 @@
   color:#000000;
   float:left;
   position: absolute;
-  top: 300px;
+  top: 250px;
   left: 450px;
 }
 
 #min_temp_label{
   position: absolute;
-  top: 310px;
+  top: 260px;
   left: 100px;
 }
 
@@ -155,36 +155,72 @@
   color:#000000;
   float:left;
   position: absolute;
-  top: 300px;
+  top: 250px;
   left: 250px;
 }
 
 #min_hum_label{
   position: absolute;
-  top: 310px;
+  top: 260px;
   left: 320px;
 }
 
 #get_temp{
   position: absolute;
-  top:150px;
-  left:250px;
+  top:100px;
+  left:550px;
 }
 
 #get_humidity{
   position: absolute;
-  top:150px;
-  left:450px;
+  top:100px;
+  left:680px;
 }
 
 #CtoF{
   position: absolute;
-  top:350px;
-  left:350px;
+  top:300px;
+  left:630px;
+}
+
+#get_avg_temp{
+  position: absolute;
+  top:150px;
+  left:550px;
+}
+
+#get_avg_hum{
+  position: absolute;
+  top:150px;
+  left:680px;
+}
+
+#get_max_temp{
+  position: absolute;
+  top:200px;
+  left:550px;
+}
+
+#get_max_hum{
+  position: absolute;
+  top:200px;
+  left:680px;
+}
+
+#get_min_temp{
+  position: absolute;
+  top:250px;
+  left:550px;
+}
+
+#get_min_hum{
+  position: absolute;
+  top:250px;
+  left:680px;
 }
 
 #Heading{
   position: absolute;
   top:0px;
-  left:250px;
+  left:350px;
 }
