@@ -4,6 +4,9 @@ import tornado.ioloop
 import tornado.web
 import socket
 import csv
+import time
+import datetime as d
+
 from collections import deque
 '''
 This is a simple Websocket Echo server that uses the Tornado websocket handler.
@@ -13,20 +16,21 @@ Messages are output to the terminal for debuggin purposes.
 ''' 
  
 class WSHandler(tornado.websocket.WebSocketHandler):
-    def open(self):
-        print ('new connection')
+	def open(self):
+		print ('new connection')
       
-    def on_message(self, message):
-        print ('message received:  ' + message)
-        # Reverse Message and send it back
-        print ('sending back message: ' + message)
-        self.write_message(message + " " + str(parsedata(message)))
- 
-    def on_close(self):
-        print ('connection closed')
- 
-    def check_origin(self, origin):
-        return True
+	def on_message(self, message):	
+		now = d.datetime.now()
+		print ('message received:  ' + message)
+		# Reverse Message and send it back
+		print ('sending back message: ' + message)
+		self.write_message(message + " " + str(parsedata(message)))
+
+	def on_close(self):
+		print ('connection closed')
+
+	def check_origin(self, origin):
+		return True
  
 application = tornado.web.Application([
     (r'/ws', WSHandler),
