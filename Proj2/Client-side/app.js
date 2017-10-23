@@ -21,7 +21,7 @@ $(document).ready(function () {
 //handling Messages from tornado server
   ws.onmessage = function(evt) {
   // log("Message Received: " + evt.data)
-  alert("message received: " + evt.data)
+  //alert("message received: " + evt.data)
     var str_arry = evt.data.split(" ")
 
     if(str_arry[0] == "ct"){
