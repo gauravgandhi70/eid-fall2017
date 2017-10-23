@@ -246,14 +246,15 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.label_16.setText(self._translate("Dialog", "%"))
 		self.label_17.setText(self._translate("Dialog", "C"))
 		self.label_18.setText(self._translate("Dialog", "%"))
-		self.curr_hum_time.setText(self._translate("Dialog", "Data Requested on"))
-		self.min_hum_time.setText(self._translate("Dialog", "Data Requested on"))
-		self.min_temp_time.setText(self._translate("Dialog", "Data Requested on"))
-		self.max_hum_time.setText(self._translate("Dialog", "Data Requested on"))
-		self.max_temp_time.setText(self._translate("Dialog", "Data Requested on"))
-		self.curr_temp_time.setText(self._translate("Dialog", "Data Requested on"))
-		self.avg_hum_time.setText(self._translate("Dialog", "Data Requested on"))
-		self.avg_temp_time.setText(self._translate("Dialog", "Data Requested on"))
+		t = d.datetime.now()
+		self.curr_hum_time.setText(self._translate("Dialog", str(t.time())))
+		self.min_hum_time.setText(self._translate("Dialog", str(t.time())))
+		self.min_temp_time.setText(self._translate("Dialog", str(t.time())))
+		self.max_hum_time.setText(self._translate("Dialog", str(t.time())))
+		self.max_temp_time.setText(self._translate("Dialog", str(t.time())))
+		self.curr_temp_time.setText(self._translate("Dialog", str(t.time())))
+		self.avg_hum_time.setText(self._translate("Dialog", str(t.time())))
+		self.avg_temp_time.setText(self._translate("Dialog", str(t.time())))
 
 
 		
@@ -296,33 +297,33 @@ class Ui_Dialog(QtWidgets.QWidget):
 		
 		self.gl_t = temp
 		now = str(d.datetime.now())
-		t = d.datetime.now.time()
+		t = d.datetime.now()
 		if(temp != None  or humidity != None):
 
 			if humidity>self.h_max:
 				self.h_max = humidity
 				self.t_mh = now
-				self.max_hum_time.setText(self._translate("Dialog", str(t)))
+				self.max_hum_time.setText(self._translate("Dialog", str(t.time())))
 
 			elif humidity<self.h_min:
 				self.h_min = humidity
 				self.t_ih = humidity
-				self.min_hum_time.setText(self._translate("Dialog", str(t)))
+				self.min_hum_time.setText(self._translate("Dialog", str(t.time())))
 		
 			if temp > self.t_max:
 				self.t_max = temp
 				self.t_mt = now
-				self.max_temp_time.setText(self._translate("Dialog", str(t)))
+				self.max_temp_time.setText(self._translate("Dialog", str(t.time())))
 
 			elif temp < self.t_min:	
 				self.t_min = temp
 				self.t_it = now
-				self.min_temp_time.setText(self._translate("Dialog", str(t)))	
+				self.min_temp_time.setText(self._translate("Dialog", str(t.time())))	
 
-			self.curr_temp_time.setText(self._translate("Dialog", str(t)))
-			self.curr_hum_time.setText(self._translate("Dialog", str(t)))
-			self.avg_hum_time.setText(self._translate("Dialog", str(t)))
-			self.avg_temp_time.setText(self._translate("Dialog", str(t)))
+			self.curr_temp_time.setText(self._translate("Dialog", str(t.time())))
+			self.curr_hum_time.setText(self._translate("Dialog", str(t.time())))
+			self.avg_hum_time.setText(self._translate("Dialog", str(t.time())))
+			self.avg_temp_time.setText(self._translate("Dialog", str(t.time())))
 
 			self.avg_t = ((self.avg_t  * (self.sample-1))+ temp)/self.sample	
 			self.avg_h = ((self.avg_h  * (self.sample-1))+ humidity)/self.sample
