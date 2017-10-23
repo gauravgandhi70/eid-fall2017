@@ -20,10 +20,13 @@ class Ui_Dialog(QtWidgets.QWidget):
 	avg_t, avg_h = [0,0]
 	h_min,t_min = ad.read_retry(22,4)
 	t_max,h_max = t_min,h_min
+	t_mt = str(d.datetime.now())
+	t_mh,t_it,t_ih = t_mt,t_mt,t_mt
 	def __init__(self):
 		super().__init__()
 		self.setupUi(self)
 	def setupUi(self, Dialog):
+# All the elements in the GUI are represented here including their name, geometry and type
 		self.sample_freq = QtCore.QTimer(self)
 		self.sample_freq.timeout.connect(self.timeout_isr)
 		Dialog.setObjectName("Dialog")
@@ -149,6 +152,31 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.label_18 = QtWidgets.QLabel(Dialog)
 		self.label_18.setGeometry(QtCore.QRect(250, 390, 21, 19))
 		self.label_18.setObjectName("label_18")
+		self.curr_hum_time = QtWidgets.QLabel(Dialog)
+		self.curr_hum_time.setGeometry(QtCore.QRect(90, 170, 161, 21))
+		self.curr_hum_time.setObjectName("curr_hum_time")
+		self.min_hum_time = QtWidgets.QLabel(Dialog)
+		self.min_hum_time.setGeometry(QtCore.QRect(80, 330, 151, 21))
+		self.min_hum_time.setObjectName("min_hum_time")
+		self.min_temp_time = QtWidgets.QLabel(Dialog)
+		self.min_temp_time.setGeometry(QtCore.QRect(380, 330, 161, 21))
+		self.min_temp_time.setObjectName("min_temp_time")
+		self.max_hum_time = QtWidgets.QLabel(Dialog)
+		self.max_hum_time.setGeometry(QtCore.QRect(80, 420, 161, 21))
+		self.max_hum_time.setObjectName("max_hum_time")
+		self.max_temp_time = QtWidgets.QLabel(Dialog)
+		self.max_temp_time.setGeometry(QtCore.QRect(380, 420, 161, 21))
+		self.max_temp_time.setObjectName("max_temp_time")
+		self.curr_temp_time = QtWidgets.QLabel(Dialog)
+		self.curr_temp_time.setGeometry(QtCore.QRect(380, 170, 161, 21))
+		self.curr_temp_time.setObjectName("curr_temp_time")
+		self.avg_hum_time = QtWidgets.QLabel(Dialog)
+		self.avg_hum_time.setGeometry(QtCore.QRect(90, 250, 161, 21))
+		self.avg_hum_time.setObjectName("avg_hum_time")
+		self.avg_temp_time = QtWidgets.QLabel(Dialog)
+		self.avg_temp_time.setGeometry(QtCore.QRect(380, 250, 161, 21))
+		self.avg_temp_time.setObjectName("avg_temp_time")
+
 
 		self.Hour_disp = QtWidgets.QLCDNumber(Dialog)
 		self.Hour_disp.setGeometry(QtCore.QRect(190, 10, 64, 23))
@@ -188,6 +216,8 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.radioButton.clicked.connect(self.ftoc)
 		self.radioButton_2.clicked.connect(self.ctof)
 
+
+
 		QtCore.QMetaObject.connectSlotsByName(Dialog)
 
 		
@@ -216,9 +246,18 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.label_16.setText(self._translate("Dialog", "%"))
 		self.label_17.setText(self._translate("Dialog", "C"))
 		self.label_18.setText(self._translate("Dialog", "%"))
+		self.curr_hum_time.setText(self._translate("Dialog", "Data Requested on"))
+		self.min_hum_time.setText(self._translate("Dialog", "Data Requested on"))
+		self.min_temp_time.setText(self._translate("Dialog", "Data Requested on"))
+		self.max_hum_time.setText(self._translate("Dialog", "Data Requested on"))
+		self.max_temp_time.setText(self._translate("Dialog", "Data Requested on"))
+		self.curr_temp_time.setText(self._translate("Dialog", "Data Requested on"))
+		self.avg_hum_time.setText(self._translate("Dialog", "Data Requested on"))
+		self.avg_temp_time.setText(self._translate("Dialog", "Data Requested on"))
+
 
 		
-		now = d.datetime.now()
+		now = (d.datetime.now())
 		self.date.display(now.day)
 		self.month.display(now.month)
 	    
@@ -226,7 +265,7 @@ class Ui_Dialog(QtWidgets.QWidget):
 		print("Sensor Code Terminated")
 		with open('Weather_Data.csv', 'a') as csvfile:
 			filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-			filewriter.writerow([0,0,0,0,0,0,0,0])
+			filewriter.writerow([0,0,0,0,0,0,0,0,0,0,0,0,0])
 
 
 	def ctof(self):
@@ -247,31 +286,43 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.c_flag = 1	
 		self.lineEdit_temp_2.setText(self._translate("Dialog", '{0:.2f}'.format(self.avg_t)))
 		self.lineEdit_temp .setText(self._translate("Dialog", '{0:.2f}'.format(self.gl_t)))
-		self.lineEdit_temp_3.setText(self._translate("Dialog", '{0:.2f}'.format((self.t_min*1.8)+32)))
-		self.lineEdit_temp_4.setText(self._translate("Dialog", '{0:.2f}'.format((self.t_min*1.8)+32)))
+		self.lineEdit_temp_3.setText(self._translate("Dialog", '{0:.2f}'.format(self.t_min)))
+		self.lineEdit_temp_4.setText(self._translate("Dialog", '{0:.2f}'.format(self.t_min)))
 
 
 	def timeout_isr(self):
 		self.sample = self.sample + 1
 		humidity,temp = ad.read_retry(22,4)
-		if humidity>self.h_max:
-			self.h_max = humidity
-		elif humidity<self.h_min:
-			self.h_min = humidity
-
-		if temp > self.t_max:
-			self.t_max = temp
-		elif temp < self.t_min:	
-			self.t_min = temp
-
-
-
+		
 		self.gl_t = temp
-		now = d.datetime.now()
+		now = str(d.datetime.now())
+		t = d.datetime.now.time()
 		if(temp != None  or humidity != None):
-			now = d.datetime.now()	
-			self.Hour_disp.display(now.hour)
-			self.Min_lcd.display(now.minute)
+
+			if humidity>self.h_max:
+				self.h_max = humidity
+				self.t_mh = now
+				self.max_hum_time.setText(self._translate("Dialog", str(t)))
+
+			elif humidity<self.h_min:
+				self.h_min = humidity
+				self.t_ih = humidity
+				self.min_hum_time.setText(self._translate("Dialog", str(t)))
+		
+			if temp > self.t_max:
+				self.t_max = temp
+				self.t_mt = now
+				self.max_temp_time.setText(self._translate("Dialog", str(t)))
+
+			elif temp < self.t_min:	
+				self.t_min = temp
+				self.t_it = now
+				self.min_temp_time.setText(self._translate("Dialog", str(t)))	
+
+			self.curr_temp_time.setText(self._translate("Dialog", str(t)))
+			self.curr_hum_time.setText(self._translate("Dialog", str(t)))
+			self.avg_hum_time.setText(self._translate("Dialog", str(t)))
+			self.avg_temp_time.setText(self._translate("Dialog", str(t)))
 
 			self.avg_t = ((self.avg_t  * (self.sample-1))+ temp)/self.sample	
 			self.avg_h = ((self.avg_h  * (self.sample-1))+ humidity)/self.sample
@@ -299,25 +350,23 @@ class Ui_Dialog(QtWidgets.QWidget):
 	
 			with open('Weather_Data.csv', 'a') as csvfile:
 				filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-				filewriter.writerow(['{0:.2f}'.format(humidity),'{0:.2f}'.format(temp),'{0:.2f}'.format(self.avg_h),'{0:.2f}'.format(self.avg_t),'{0:.2f}'.format(self.h_max),'{0:.2f}'.format(self.t_max),'{0:.2f}'.format(self.h_min),'{0:.2f}'.format(self.t_min)])
+				filewriter.writerow([str(humidity),str(temp),str(self.avg_h),str(self.avg_t),now,str(self.h_max),self.t_mh,str(self.t_max),self.t_mt,str(self.h_min),self.t_ih,str(self.t_min),self.t_it])
 		else:
 			self.lineEdit_temp_2.setText(self._translate("Dialog","Sensor Disconnected"))
 			self.lineEdit_humid_2.setText(self._translate("Dialog", "Sensor Disconnected"))
 			with open('Weather_Data.csv', 'a') as csvfile:
 				filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-				filewriter.writerow([0,0,0,0,0,0,0,0])
+				filewriter.writerow([0,0,0,0,0,0,0,0,0,0,0,0,0])
 	
 	def query_temp(self):
 		
 		humidity, temp = ad.read_retry(22,4)
-		now = d.datetime.now()
-		self.Hour_disp.display(now.hour)
-		self.Min_lcd.display(now.minute)
+		now = str(d.datetime.now())
 		if(temp == None):
 			self.lineEdit_temp.setText(self._translate("Dialog", "Sensor Disconnected"))
 			with open('Weather_Data.csv', 'a') as csvfile:
 				filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-				filewriter.writerow([0,0,0,0,0,0,0,0])
+				filewriter.writerow([0,0,0,0,0,0,0,0,0,0,0,0,0])
 		else:	
 			if humidity>self.h_max:
 				self.h_max = humidity
@@ -351,17 +400,15 @@ class Ui_Dialog(QtWidgets.QWidget):
 
 			with open('Weather_Data.csv', 'a') as csvfile:
 				filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-				filewriter.writerow([humidity_string,temp_string,'{0:.2f}'.format(self.avg_h),'{0:.2f}'.format(self.avg_t),'{0:.2f}'.format(self.h_max),'{0:.2f}'.format(self.t_max),'{0:.2f}'.format(self.h_min),'{0:.2f}'.format(self.t_min)])
+				filewriter.writerow([str(humidity),str(temp),str(self.avg_h),str(self.avg_t),now,str(self.h_max),self.t_mh,str(self.t_max),self.t_mt,str(self.h_min),self.t_ih,str(self.t_min),self.t_it])
 	def query_humidity(self):
 		humidity, temp = ad.read_retry(22,4)
-		now = d.datetime.now()
-		self.Hour_disp.display(now.hour)
-		self.Min_lcd.display(now.minute)
+		now = str(d.datetime.now())
 		if(humidity == None):
 			self.lineEdit_humid.setText(self._translate("Dialog", "Sensor Disconnected"))
 			with open('Weather_Data.csv', 'a') as csvfile:
 				filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-				filewriter.writerow([0,0,0,0,0,0,0,0])
+				filewriter.writerow([0,0,0,0,0,0,0,0,0,0,0,0,0])
 
 		else:	
 			if humidity>self.h_max:
@@ -388,16 +435,23 @@ class Ui_Dialog(QtWidgets.QWidget):
 				filewriter.writerow([humidity_string,temp_string,'{0:.2f}'.format(self.avg_h),'{0:.2f}'.format(self.avg_t),'{0:.2f}'.format(self.h_max),'{0:.2f}'.format(self.t_max),'{0:.2f}'.format(self.h_min),'{0:.2f}'.format(self.t_min)])
 
 	def plot_graph(self):
-		humidity,temp,a,b,c,d,e,f = np.loadtxt('Weather_Data.csv', delimiter=',', unpack=True)
-		i = range(0,len(humidity))
+		x = []
+		y = []
+		with open('Weather_Data.csv','r') as csvfile:
+			plots = csv.reader(csvfile, delimiter=',')
+			for row in plots:
+				x.append(float(row[0]))
+				y.append(float(row[1]))
+
+		i = range(0,len(x))
 		fig = plt.figure()
 		fig.subplots_adjust(hspace=.5)
 		ax1 = fig.add_subplot(211)
-		ax1.plot(i,humidity,)
+		ax1.plot(i,x,)
 		ax1.set_title('Humidity')
 		
 		ax2 = fig.add_subplot(212)
-		ax2.plot(i,temp,'r-')
+		ax2.plot(i,y,'r-')
 		ax2.set_title('Temperature')
 		
 		fig.show()

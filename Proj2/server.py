@@ -14,13 +14,15 @@ Please run `pip install tornado` with python of version 2.7.9 or greater to inst
 This program will echo back the reverse of whatever it recieves.
 Messages are output to the terminal for debuggin purposes. 
 ''' 
+#variable for checking if a client is authenticated
 access_granted = 0
 
+#Handler for websocket events
 class WSHandler(tornado.websocket.WebSocketHandler):
 	
 	def open(self):
 		print ('new connection')
-      
+      #function to handle event messages
 	def on_message(self, message):	
 		global access_granted
 		now = d.datetime.now()
@@ -38,7 +40,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 			return
 
 		print ('sending back message: ' + message)
-		self.write_message(message + " " + str(parsedata(message)) +" "+str(now.date())+" "+str(now.hour)+":"+str(now.minute)+":"+str(now.second))
+		self.write_message(message + " " + parsedata(message))
 
 	def on_close(self):
 		print ('connection closed')
@@ -46,10 +48,13 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 	def check_origin(self, origin):
 		return True
  
+#defining application for websockets and hosting images
 application = tornado.web.Application([
     (r'/ws', WSHandler),
+    (r"/(Weather_data.jpg)", tornado.web.StaticFileHandler, {'path':'./'})
 ])
  
+#function to parse data for the client
 def parsedata(data):	
 	global access_granted
 	print("AG - ",access_granted)
@@ -59,32 +64,32 @@ def parsedata(data):
 			deq=deque(csv.reader(csvfile),1)
 		
 		for sub_list in deq:
-			ch,ct,ah,at,mh,mt,ih,it = sub_list
-		for i in range(0,8):
+			ch,ct,ah,at,curr_t,mh,mh_time,mt,mt_time,ih,ih_time,it,it_time = sub_list
+		for i in range(0,13):
 			if (sub_list[i] == "0"):
-				if i == 7:
+				if i == 12:
 					return "sd"		
 			else:
-				print(sub_list[i],i)
+				#print(sub_list[i],i)
 				break
 				
 	
 		if data == "ct":
-			return ct
+			return (ct + " " + curr_t)
 		elif data == "ch":
-			return ch
+			return (ch + " " + curr_t)
 		elif data == "at":
-			return at
+			return (at+ " " + curr_t)
 		elif data == "ah":
-			return ah
+			return (ah + " " + curr_t)
 		elif data == "mt":
-			return mt
+			return (mt+ " " + mt_time)
 		elif data == "mh":
-			return mh
+			return (mh + " " + mh_time)
 		elif data == "it":
-			return it
+			return (it+ " " + it_time)
 		elif data == "ih":
-			return ih
+			return (ih + " " + ih_time)
 		elif data == "lo":
 			access_granted = 0
 			return "Logged_Out"
@@ -97,9 +102,9 @@ def parsedata(data):
 
 
 
-
+#main loop to run the server and listen for requests continuously
 if __name__ == "__main__":
-    http_server = tornado.httpserver.HTTPServer(application)
+    http_server = tornado.httpserver.HTTPServer(application, )
     http_server.listen(8888)
     myIP = socket.gethostbyname(socket.gethostname())
     print ('*** Websocket Server Started at %s***' % myIP)
