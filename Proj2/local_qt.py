@@ -221,6 +221,13 @@ class Ui_Dialog(QtWidgets.QWidget):
 		now = d.datetime.now()
 		self.date.display(now.day)
 		self.month.display(now.month)
+	    
+	def closeEvent(self,event):
+		print("Sensor Code Terminated")
+		with open('Weather_Data.csv', 'a') as csvfile:
+			filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+			filewriter.writerow([0,0,0,0,0,0,0,0])
+
 
 	def ctof(self):
 		self.label_7.setText(self._translate("Dialog", "F"))
@@ -296,6 +303,9 @@ class Ui_Dialog(QtWidgets.QWidget):
 		else:
 			self.lineEdit_temp_2.setText(self._translate("Dialog","Sensor Disconnected"))
 			self.lineEdit_humid_2.setText(self._translate("Dialog", "Sensor Disconnected"))
+			with open('Weather_Data.csv', 'a') as csvfile:
+				filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+				filewriter.writerow([0,0,0,0,0,0,0,0])
 	
 	def query_temp(self):
 		
@@ -305,6 +315,9 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.Min_lcd.display(now.minute)
 		if(temp == None):
 			self.lineEdit_temp.setText(self._translate("Dialog", "Sensor Disconnected"))
+			with open('Weather_Data.csv', 'a') as csvfile:
+				filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+				filewriter.writerow([0,0,0,0,0,0,0,0])
 		else:	
 			if humidity>self.h_max:
 				self.h_max = humidity
@@ -346,6 +359,10 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.Min_lcd.display(now.minute)
 		if(humidity == None):
 			self.lineEdit_humid.setText(self._translate("Dialog", "Sensor Disconnected"))
+			with open('Weather_Data.csv', 'a') as csvfile:
+				filewriter = csv.writer(csvfile, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+				filewriter.writerow([0,0,0,0,0,0,0,0])
+
 		else:	
 			if humidity>self.h_max:
 				self.h_max = humidity
