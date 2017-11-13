@@ -1,14 +1,29 @@
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
+const SNS = new AWS.SNS({ apiVersion: '2010-03-31' });
 
+
+
+const params = {
+    Message: 'Max Temp is greater than threshold',
+    Subject: 'Sensor Info',
+    TopicArn:'arn:aws:sns:us-west-2:520127090359:aws-temp-hum-topic',
+};
+
+var global_max_temp;
 exports.handler = function (event, context){
 
+        // TODO implement
 
     // Load credentials and set the region from the JSON file
     //AWS.config.loadFromPath('./config.json');
 
     // Create an SQS service object
     var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+//send Email after the threshold is reached
+   if(event.temp>35){
+        SNS.publish(params,context.done);
+   }
 
     if(event.count == 1)
     {
@@ -44,7 +59,7 @@ exports.handler = function (event, context){
         };
 
 
-//function to read from the sqs queue
+
         sqs.receiveMessage(rcv_params, function(err, data) {
           if (err) {
             console.log("Receive Error", err);
@@ -81,6 +96,7 @@ exports.handler = function (event, context){
             if(event.temp > ob.max_temp)
             {
                 max_temp = event.temp;
+                global_max_temp = event.temp;
             }
             else
             {
@@ -101,7 +117,7 @@ exports.handler = function (event, context){
               QueueUrl: "https://sqs.us-west-2.amazonaws.com/520127090359/temporary",
               ReceiptHandle: data.Messages[0].ReceiptHandle
             };
-//delete messages from the sqs queue
+
             sqs.deleteMessage(deleteParams, function(err, data) {
               if (err) {
                 console.log("Delete Error", err);
@@ -140,11 +156,6 @@ exports.handler = function (event, context){
           }
         });
 
-
-
-
     }
-
-
     //callback(null, 'Hello from Lambda');
 };
