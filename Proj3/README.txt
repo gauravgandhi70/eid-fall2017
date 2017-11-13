@@ -31,4 +31,4 @@ If the tempereature is within the range then "Safe" message will be displayed an
 threshold then warning message will be displayed.
 You can close the window by pressing 'x' in the upper right corner.
 
-To Start Client Run client_side.py, You can request data on client and it will fetch upto 30 messages from the SQS queue.
+To Start Client Run client_side.py in client folder, You can request data on client and it will fetch upto 30 messages from the SQS queue.
