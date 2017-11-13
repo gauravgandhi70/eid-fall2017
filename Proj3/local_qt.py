@@ -26,9 +26,27 @@ class Ui_Dialog(QtWidgets.QWidget):
 	t_max,h_max = t_min,h_min
 	t_mt = str(d.datetime.now())
 	t_mh,t_it,t_ih = t_mt,t_mt,t_mt
+	myAWSIoTMQTTClient = None
+
 	def __init__(self):
 		super().__init__()
 		self.setupUi(self)
+		self.mqttSetup()
+	def mqttSetup(self):
+		self.myAWSIoTMQTTClient = AWSIoTMQTTClient("clientId")
+		self.myAWSIoTMQTTClient.configureEndpoint("a2lybklkk15nvm.iot.us-west-2.amazonaws.com", 8883)
+		self.myAWSIoTMQTTClient.configureCredentials("root-CA.crt","Pi-Server.private.key", "Pi-Server.cert.pem")
+		
+		self.myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 32, 20)
+		self.myAWSIoTMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
+		self.myAWSIoTMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
+		self.myAWSIoTMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
+		self.myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
+		
+		self.myAWSIoTMQTTClient.connect()
+		self.myAWSIoTMQTTClient.subscribe('eid_proj3', 1, None)
+		
+            
 	def setupUi(self, Dialog):
 # All the elements in the GUI are represented here including their name, geometry and type
 		self.sample_freq = QtCore.QTimer(self)
@@ -180,8 +198,8 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.avg_temp_time = QtWidgets.QLabel(Dialog)
 		self.avg_temp_time.setGeometry(QtCore.QRect(380, 250, 161, 21))
 		self.avg_temp_time.setObjectName("avg_temp_time")
-
-
+		
+		
 		self.Hour_disp = QtWidgets.QLCDNumber(Dialog)
 		self.Hour_disp.setGeometry(QtCore.QRect(190, 10, 64, 23))
 		self.Hour_disp.setFrameShape(QtWidgets.QFrame.NoFrame)
@@ -189,13 +207,13 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.Hour_disp.setDigitCount(2)
 		self.Hour_disp.setSegmentStyle(QtWidgets.QLCDNumber.Filled)
 		self.Hour_disp.setObjectName("Hour_disp")
-
+		
 		self.Min_lcd = QtWidgets.QLCDNumber(Dialog)
 		self.Min_lcd.setGeometry(QtCore.QRect(280, 10, 64, 23))
 		self.Min_lcd.setFrameShape(QtWidgets.QFrame.NoFrame)
 		self.Min_lcd.setDigitCount(2)
 		self.Min_lcd.setObjectName("Min_lcd")
-
+		
 		self.date = QtWidgets.QLCDNumber(Dialog)
 		self.date.setGeometry(QtCore.QRect(420,10,64,23))
 		self.date.setFrameShape(QtWidgets.QFrame.NoFrame)
@@ -207,10 +225,10 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.month.setFrameShape(QtWidgets.QFrame.NoFrame)
 		self.month.setDigitCount(2)
 		self.month.setObjectName("month")
-#Events generated after button press 		
-
+		#Events generated after button press 		
+		
 		self.sample_freq.start(5000)
-        
+		
 		self.retranslateUi(Dialog)
 		self.Plot_Data.clicked.connect(self.plot_graph)
 		self.temperature.clicked.connect(self.query_temp)
@@ -219,9 +237,9 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.AlarmControl.valueChanged['int'].connect(self.lcdNumber.display)
 		self.radioButton.clicked.connect(self.ftoc)
 		self.radioButton_2.clicked.connect(self.ctof)
-
-
-
+		
+		
+		
 		QtCore.QMetaObject.connectSlotsByName(Dialog)
 
 #Initial display test of all the elements
@@ -260,8 +278,8 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.curr_temp_time.setText(self._translate("Dialog", str(t.time())))
 		self.avg_hum_time.setText(self._translate("Dialog", str(t.time())))
 		self.avg_temp_time.setText(self._translate("Dialog", str(t.time())))
-
-
+		
+		
 		
 		now = (d.datetime.now())
 		self.date.display(now.day)
@@ -304,8 +322,11 @@ class Ui_Dialog(QtWidgets.QWidget):
 		now = str(d.datetime.now())
 		t = d.datetime.now()
 		if(temp != None  or humidity != None):
+			
+			self.myAWSIoTMQTTClient.publish("eid_proj3", '{ "count":' +str(self.sample) +', "temp":' + '{0:.2f}'.format(temp) +  ', "humidity":' + '{0:.2f}'.format(humidity) + ' }', 1)
 
-			if humidity>self.h_max:
+
+			if humidity>self.h_max and humidity<100:
 				self.h_max = humidity
 				self.t_mh = now
 				self.max_hum_time.setText(self._translate("Dialog", str(t.time())))
