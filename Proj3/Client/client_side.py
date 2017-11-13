@@ -277,7 +277,7 @@ class Ui_Dialog(QtWidgets.QWidget):
 			#self.temp_progress.setMaximum(self.curr_position)
 			self.alarm.setText(self._translate("Dialog", "Safe"))	
 		
-		
+	#function to get 30 messages  from the SQS queue	
 	def get_sqs_messages(self):
 		message_box_string = ''
 		count = 0
@@ -293,7 +293,7 @@ class Ui_Dialog(QtWidgets.QWidget):
 		self.min_hum=list()
 
 		for i in range(0,3):
-			self.message_array.append(self.q.receive_messages(MaxNumberOfMessages=10))
+			self.message_array.append(self.q.receive_messages(MaxNumberOfMessages=10))#query upto 10 messages
 			print(len(self.message_array[i]))
 			count = count + len(self.message_array[i])
 			if(len(self.message_array[i])==0):

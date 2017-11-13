@@ -3,7 +3,6 @@ var AWS = require('aws-sdk');
 
 exports.handler = function (event, context){
 
-        // TODO implement
 
     // Load credentials and set the region from the JSON file
     //AWS.config.loadFromPath('./config.json');
@@ -45,7 +44,7 @@ exports.handler = function (event, context){
         };
 
 
-
+//function to read from the sqs queue
         sqs.receiveMessage(rcv_params, function(err, data) {
           if (err) {
             console.log("Receive Error", err);
@@ -102,7 +101,7 @@ exports.handler = function (event, context){
               QueueUrl: "https://sqs.us-west-2.amazonaws.com/520127090359/temporary",
               ReceiptHandle: data.Messages[0].ReceiptHandle
             };
-
+//delete messages from the sqs queue
             sqs.deleteMessage(deleteParams, function(err, data) {
               if (err) {
                 console.log("Delete Error", err);
