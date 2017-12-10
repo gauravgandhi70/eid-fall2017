@@ -307,6 +307,7 @@ class Ui_Dialog(QtWidgets.QWidget):
         def closeEvent(self,event):
                 print("Sensor Code Terminated")
                 self.amqp_thread.join()
+
 # Celcius to Faranheit
 
         def ctof(self):

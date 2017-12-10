@@ -70,14 +70,14 @@ class BlockResource (resource.CoAPResource):
         self.visible = True
 
     def render_GET(self, request):
-        print 'Get Payload' + request.payload
+        #print 'Get Payload' + request.payload
 
         payload="Gaurav Gandhi"
         response = coap.Message(code=coap.CONTENT, payload=payload)
         return defer.succeed(response)
 
     def render_PUT(self, request):
-        print 'PUT payload: ' + request.payload
+        #print 'PUT payload: ' + request.payload
         payload = "Mr. and Mrs. Dursley of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much."
         response = coap.Message(code=coap.CHANGED, payload=payload)
         return defer.succeed(response)

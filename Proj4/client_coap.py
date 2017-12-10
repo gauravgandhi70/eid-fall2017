@@ -27,6 +27,14 @@ class Agent():
         d.addCallback(self.printResponse)
         d.addErrback(self.noResponse)
         
+    def putResource(self):
+        payload = "Riders on the storm.\nRiders on the storm.\nInto this house we're born\nInto this world we're thrown"
+        request = coap.Message(code=coap.PUT, payload=payload)
+        request.opt.uri_path = ("large-update",)
+        request.opt.content_format = coap.media_types_rev['text/plain']
+        request.remote = (ip_address('198.41.30.241'), coap.COAP_PORT)
+        d = protocol.request(request)
+        d.addCallback(self.printResponse)
 
     def printResponse(self, response):
         print 'First result: ' + response.payload
@@ -49,4 +57,5 @@ protocol = coap.Coap(endpoint)
 reactor.listenUDP(61616, protocol)#, interface="::")
 Thread(target=reactor.run, args=(False,)).start()
 client = Agent(protocol)
-client.requestResource()
+
+client.putResource()
