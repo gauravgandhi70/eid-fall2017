@@ -19,12 +19,27 @@ from aiocoap import *
 import pika
 import threading
 import time
+import paho.mqtt.client as mqtt
 
 start_time_coap = 0
 start_time_amqp = 0
+start_time_mqtt = 0
 amqp_times = list()
 coap_times = list()
+mqtt_times = list()
 
+def on_publish(client,obj,mid):
+    global start_time_mqtt
+    start_time_mqtt = time.time()
+    #print("published")
+
+def on_message(client,obj,msg):
+    global start_time_mqtt
+    global mqtt_times
+    elapsed_time = time.time() - start_time_mqtt
+    #print(elapsed_time)
+    mqtt_times.append(round(elapsed_time,3))
+    
 class amqp_init:
     def __init__(self):
         self.channel = None
@@ -121,11 +136,24 @@ class Ui_Dialog(QtWidgets.QWidget):
         prot_test_msg_array= list()
         coap_client = coap_client()
         amqp_client = amqp_init()
+        
+        def publish_thread(self):
+                global start_time
+                self.client = mqtt.Client()
+                self.client.connect("10.0.0.241", 1883, 60)
+                self.client.subscribe("/EID",0)
+                self.client.on_publish = on_publish
+                self.client.on_message = on_message
+                self.client.loop_start()
+        
         def __init__(self):
                 super().__init__()
                 self.setupUi(self)
                 self.amqp_thread = threading.Thread(target = self.amqp_client.establish_conn,name='amqp_thread')
                 self.amqp_thread.start()
+                self.mqtt_thread = threading.Thread(target = self.publish_thread,name='mqtt_thread')
+                self.mqtt_thread.start()
+                
         def setupUi(self, Dialog):
 # All the elements in the GUI are represented here including their name, geometry and type
                 Dialog.setObjectName("Dialog")
@@ -426,13 +454,14 @@ class Ui_Dialog(QtWidgets.QWidget):
                 self.lineEdit_humid_2.setText(self._translate("Dialog", str(self.avg_hum[0])))
                 self.lineEdit_humid_4.setText(self._translate("Dialog", str(self.min_hum[0])))
                 self.lineEdit_humid_5.setText(self._translate("Dialog", str(self.max_hum[0])))
-                
 
         def test_protocols(self):
                 global coap_times
                 global amqp_times
+                global mqtt_times
                 coap_times = list()
                 amqp_times = list()
+                mqtt_times = list()
                 for i in range(0,len(self.prot_test_msg_array)):
                     bytes = str.encode(self.prot_test_msg_array[i])
                     self.coap_client.main(bytes)
@@ -442,6 +471,11 @@ class Ui_Dialog(QtWidgets.QWidget):
                     self.amqp_client.publish_string(bytes)
                     time.sleep(0.1)
                 print(amqp_times)
+                for i in range(0,len(self.prot_test_msg_array)):
+                    bytes = str.encode(self.prot_test_msg_array[i])
+                    self.client.publish('/EID',bytes)
+                    time.sleep(0.1)
+                print(mqtt_times)
 
 if __name__ == '__main__':
         
