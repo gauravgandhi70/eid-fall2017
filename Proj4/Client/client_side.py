@@ -95,16 +95,16 @@ class amqp_init:
 
 class websocket_client():
 	def Websock(self,message):
-		ws = create_connection("ws://127.0.0.1:8888/ws")
+		ws = create_connection("ws://10.0.0.241:8888/ws")
 		#print("Sending 'Hello, World'...")
 		start_time_websocket = time.time()
 		ws.send(message)
-		print("Sent")
-		print("Receiving...")
+		#print("Sent")
+		#print("Receiving...")
 		result =  ws.recv()
-		end_time = time.time() - start_time_coap
+		end_time = time.time() - start_time_websocket
 		websocket_times.append(round(end_time,3))
-		print("Received '%s'" % result)
+		#print("Received '%s'" % result)
 		ws.close()
 
         
@@ -488,22 +488,32 @@ class Ui_Dialog(QtWidgets.QWidget):
 		for i in range(0,len(self.prot_test_msg_array)):
 			bytes = str.encode(self.prot_test_msg_array[i])
 			self.coap_client.main(bytes)
-		print(coap_times)
+		print("\nCoap Time",coap_times)
 		for i in range(0,len(self.prot_test_msg_array)):
 			bytes = str.encode(self.prot_test_msg_array[i])
 			self.amqp_client.publish_string(bytes)
 			time.sleep(0.1)
-		print(amqp_times)
+		print("\namqp time",amqp_times)
 		for i in range(0,len(self.prot_test_msg_array)):
 			bytes = str.encode(self.prot_test_msg_array[i])
 			self.client.publish('/EID',bytes)
 			time.sleep(0.1)
-		print(mqtt_times)
+		print("\nmqtt times",mqtt_times)
 		for i in range(0,len(self.prot_test_msg_array)):
 			bytes = str.encode(self.prot_test_msg_array[i])
 			self.websocket_client.Websock(bytes)
 			time.sleep(0.1)
-		print(websocket_times)
+		print("\n WebSocket times",websocket_times)
+
+		plt.plot(range(len(coap_times)), coap_times, 'b-', label='COAP Profile')
+		plt.plot(range(len(amqp_times)), amqp_times, 'r-', label='AMQP Profile')
+		plt.plot(range(len(mqtt_times)), mqtt_times, 'y-', label='MQTT Profile')
+		plt.plot(range(len(websocket_times)), websocket_times, 'g-', label='WebSocket Profile')
+		plt.legend(loc='best')
+		plt.title('Timing Analysis')
+		plt.ylabel('Time')
+		plt.xlabel('Count')
+		plt.show()
 
 		
 
