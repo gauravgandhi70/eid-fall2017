@@ -686,7 +686,11 @@ application = tornado.web.Application([
     (r"/(Weather_data.jpg)", tornado.web.StaticFileHandler, {'path':'./'})
 ])
 
-def start_websocket(self):
+def start_websocket():
+	http_server = tornado.httpserver.HTTPServer(application)
+	http_server.listen(8888)
+	myIP = socket.gethostbyname(socket.gethostname())
+	print ('*** Websocket Server Started at %s***' % myIP)
 	tornado.ioloop.IOLoop.instance().start()
  
  
@@ -703,13 +707,10 @@ if __name__ == '__main__':
     amqp_thread = threading.Thread(target = amqp.establish_conn,name='amqp_thread')
     amqp_thread.start()
 
-    http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(8888)
-    myIP = socket.gethostbyname(socket.gethostname())
-    print ('*** Websocket Server Started at %s***' % myIP)
 
     wesocket_thread = threading.Thread(target = start_websocket,name='websocket_thread')
-
+    wesocket_thread.start()
+    
     ex.show();
     sys.exit(app.exec_())
    
