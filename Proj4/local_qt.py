@@ -20,6 +20,11 @@ import argparse
 import threading
 import paho.mqtt.client as mqtt
 import asyncio
+import tornado.httpserver
+import tornado.websocket
+import tornado.ioloop
+import tornado.web
+import socket
 
 import aiocoap.resource as resource
 import aiocoap
@@ -657,6 +662,35 @@ class amqp_init:
             self.publish_string(body)
 
 
+class WSHandler(tornado.websocket.WebSocketHandler):
+	
+	def open(self):
+		print ('new connection')
+      #function to handle event messages
+	def on_message(self, message):	
+		print ('message received:  ' + message)
+		# Reverse Message and send it back
+
+		self.write_message(message)
+
+	def on_close(self):
+		print ('connection closed')
+
+	def check_origin(self, origin):
+		return True
+
+
+#defining application for websockets and hosting images
+application = tornado.web.Application([
+    (r'/ws', WSHandler),
+    (r"/(Weather_data.jpg)", tornado.web.StaticFileHandler, {'path':'./'})
+])
+
+def start_websocket(self):
+	tornado.ioloop.IOLoop.instance().start()
+ 
+ 
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     ex = Ui_Dialog()
@@ -668,6 +702,14 @@ if __name__ == '__main__':
     amqp = amqp_init()
     amqp_thread = threading.Thread(target = amqp.establish_conn,name='amqp_thread')
     amqp_thread.start()
+
+    http_server = tornado.httpserver.HTTPServer(application)
+    http_server.listen(8888)
+    myIP = socket.gethostbyname(socket.gethostname())
+    print ('*** Websocket Server Started at %s***' % myIP)
+
+    wesocket_thread = threading.Thread(target = start_websocket,name='websocket_thread')
+
     ex.show();
     sys.exit(app.exec_())
    
